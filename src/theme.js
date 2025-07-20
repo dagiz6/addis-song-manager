@@ -10,6 +10,14 @@ export const theme = {
       light: "#ffffff",
       dark: "#121212",
     },
+    pagination: {
+      active: "#3f51b5",
+      inactive: "#e0e0e0",
+    },
+    sortButtons: {
+      active: "#3f51b5",
+      inactive: "#f0f0f0",
+    },
   },
   fonts: {
     body: "system-ui, sans-serif",

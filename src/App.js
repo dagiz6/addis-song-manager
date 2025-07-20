@@ -34,6 +34,21 @@ const songs = [
     year: "1989",
     albumArt: "https://i1.sndcdn.com/artworks-000118740984-a0wcn5-t500x500.jpg",
   },
+  {
+    id: 5,
+    title: "Haya",
+    artist: "Rophnan",
+    year: "2022",
+    albumArt: "https://i1.sndcdn.com/artworks-opFt5gFkO6z5-0-t500x500.jpg",
+  },
+  {
+    id: 6,
+    title: "Nothing Breaks Like a Heart",
+    artist: "Mark Ronson ft. Miley Cyrus",
+    year: "2018",
+    albumArt:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/6b/2d/a2/6b2da292-0cde-c33c-b56b-e3d15ab83cd8/886447521540.jpg/1200x630bf-60.jpg",
+  },
 ];
 
 function App() {
