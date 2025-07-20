@@ -163,7 +163,8 @@ const handleSongAdded = async (newSong) => {
     } catch (error) {
       console.error("Error deleting song:", error);
     }
-  };
+    };
+    
 
   return (
     <div css={containerStyles}>

@@ -77,6 +77,14 @@ export function makeServer({ environment = "development" } = {}) {
         schema.songs.find(id).destroy();
         return { success: true };
       });
+
+  this.put("/songs/:id", (schema, request) => {
+    const id = request.params.id;
+    const attrs = JSON.parse(request.requestBody);
+    const updatedSong = schema.songs.find(id).update(attrs);
+    return updatedSong.attrs; // Return the full updated song object
+  });
+        
     },
   });
 }
