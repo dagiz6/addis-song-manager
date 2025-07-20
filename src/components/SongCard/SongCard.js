@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
 const Card = styled.div`
@@ -56,14 +55,34 @@ const ArtistName = styled.p`
   margin: ${({ theme }) => theme.space[1]}px 0 0;
 `;
 
-const Year = styled.span`
+const YearBadge = styled.span`
   font-family: ${({ theme }) => theme.fonts.body};
   font-size: ${({ theme }) => theme.fontSizes[1]}px;
-  color: inherit;
-  opacity: 0.8;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background-color: ${({ theme }) => theme.colors.secondary};
+  color: white;
 `;
 
-export const SongCard = ({ song }) => {
+const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  color: #ff4444;
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.2s;
+
+  ${Card}:hover & {
+    opacity: 1;
+  }
+`;
+
+
+
+export const SongCard = ({ song, onDelete }) => {
+    if (!song) return null; 
   return (
     <Card>
       <AlbumArt src={song.albumArt} alt={song.title} />
@@ -71,7 +90,10 @@ export const SongCard = ({ song }) => {
         <SongTitle>{song.title}</SongTitle>
         <ArtistName>{song.artist}</ArtistName>
       </SongInfo>
-      <Year>{song.year}</Year>
+      <YearBadge>{song.year}</YearBadge>
+      {onDelete && (
+        <DeleteButton onClick={() => onDelete(song.id)}>Delete</DeleteButton>
+      )}
     </Card>
   );
 };

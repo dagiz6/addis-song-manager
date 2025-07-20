@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import { SongCard } from "../SongCard/SongCard";
 import { PaginationControls } from "../PaginationControls/PaginationControls";
+import { AddSongForm } from "../AddSongForm/AddSongForm";
 
 const containerStyles = css`
   max-width: 800px;
@@ -30,6 +31,20 @@ const controlsContainer = css`
   flex-wrap: wrap;
 `;
 
+const buttonStyles = (theme) => css`
+  padding: 8px 16px;
+  background-color: ${theme.colors.primary};
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: ${theme.colors.secondary};
+  }
+`;
+
 const sortButtonStyles = (theme, isActive) => css`
   padding: 8px 16px;
   background-color: ${isActive ? theme.colors.primary : "#f0f0f0"};
@@ -45,14 +60,31 @@ const sortButtonStyles = (theme, isActive) => css`
   }
 `;
 
-export const SongList = ({ songs }) => {
+export const SongList = () => {
+  const [songs, setSongs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortedSongs, setSortedSongs] = useState([...songs]);
+  const [sortedSongs, setSortedSongs] = useState([]);
   const [sortConfig, setSortConfig] = useState({
     type: "default",
     direction: "asc",
   });
   const songsPerPage = 5;
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  useEffect(() => {
+const fetchSongs = async () => {
+  try {
+    const response = await fetch("/api/songs");
+    const songs = await response.json();
+    console.log("Fetched songs:", songs); // Debug log
+    setSongs(Array.isArray(songs) ? songs : []);
+  } catch (error) {
+    console.error("Error fetching songs:", error);
+  }
+};
+
+    fetchSongs();
+  }, []);
 
   // Sort songs based on configuration
   useEffect(() => {
@@ -106,9 +138,45 @@ export const SongList = ({ songs }) => {
     }`;
   };
 
+const handleSongAdded = async (newSong) => {
+  try {
+    const response = await fetch("/api/songs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newSong),
+    });
+    const addedSong = await response.json();
+    console.log("Added song:", addedSong); // Debug log
+    setSongs((prev) => [...prev, addedSong]);
+    setShowAddForm(false);
+  } catch (error) {
+    console.error("Error adding song:", error);
+  }
+};
+
+  const handleDelete = async (id) => {
+    try {
+      await fetch(`/api/songs/${id}`, { method: "DELETE" });
+      setSongs((prev) => prev.filter((song) => song.id !== id));
+    } catch (error) {
+      console.error("Error deleting song:", error);
+    }
+  };
+
   return (
     <div css={containerStyles}>
       <h1 css={titleStyles}>Addis Song Manager</h1>
+
+      <button
+        css={(theme) => buttonStyles(theme)}
+        onClick={() => setShowAddForm(!showAddForm)}
+      >
+        {showAddForm ? "Cancel" : "Add New Song"}
+      </button>
+
+      {showAddForm && <AddSongForm onSongAdded={handleSongAdded} />}
 
       <div css={controlsContainer}>
         <button
@@ -134,7 +202,11 @@ export const SongList = ({ songs }) => {
       </div>
 
       {currentSongs.map((song) => (
-        <SongCard key={song.id} song={song} />
+        <SongCard
+          key={song.id}
+          song={song}
+          onDelete={() => handleDelete(song.id)}
+        />
       ))}
 
       <PaginationControls
